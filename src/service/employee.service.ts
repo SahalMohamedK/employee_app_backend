@@ -14,7 +14,7 @@ class EmployeeService{
         return this.repository.getById(id);
     }
 
-    create(name: string, email: string): Promise<Employee> {
+    create(name: string, email: string): Promise<Employee | null> {
         const employee = new Employee();
         employee.name = name;
         employee.email = email;
@@ -22,7 +22,7 @@ class EmployeeService{
         return this.repository.create(employee)
     }
 
-    async update(id: number, name: string, email: string){
+    async update(id: number, name: string, email: string): Promise<Employee | null>{
         const employee = await this.repository.getById(id)
 
         employee.name = name;
@@ -31,9 +31,9 @@ class EmployeeService{
         return this.repository.update(employee);
     }
 
-    async softRemove(id: number){
+    async softRemove(id: number): Promise<void>{
         const employee = await this.repository.getById(id)
-        return this.repository.softRemove(employee)
+        this.repository.softRemove(employee)
     }
 }
 

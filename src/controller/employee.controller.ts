@@ -16,8 +16,12 @@ class EmployeeController{
         this.router.delete('/:id', this.delete)
     }
 
-    getId = (req: express.Request) => {
+    getId(req: express.Request){
         return Number(req.params.id)
+    }
+
+    getBody(req: express.Request, fields: string[]){
+        return fields.map(field => req.body[field])
     }
 
     getAll = async(req: express.Request, res: express.Response) => {
@@ -32,18 +36,15 @@ class EmployeeController{
     }
 
     create = async (req: express.Request, res: express.Response) => {
-        const name = req.body.name
-        const email = req.body.email
+        const [name, email] = this.getBody(req, ['name', 'email'])
 
         const employee = await this.service.create(name, email);
-
         res.status(200).send(employee)
     }
 
     update = async (req: express.Request, res: express.Response) => {
         const id = this.getId(req)
-        const name = req.body.name
-        const email = req.body.email
+        const [name, email] = this.getBody(req, ['name', 'email'])
 
         const employee = await this.service.update(id, name, email)
         res.status(200).send(employee)

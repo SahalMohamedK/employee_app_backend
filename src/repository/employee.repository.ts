@@ -1,6 +1,5 @@
-import { DataSource, Repository, UpdateResult } from "typeorm";
+import { Repository } from "typeorm";
 import Employee from "../entity/employee.entity";
-import dataSource from "../db/postgres.db";
 
 class EmployeeRepository{
     constructor(
@@ -23,8 +22,8 @@ class EmployeeRepository{
         return this.repository.save(employee)
     }
 
-    softRemove(employee: Employee): Promise<Employee>{
-        return this.repository.softRemove(employee)
+    softRemove(employee: Employee): void{
+        this.repository.softRemove(employee)
     }
 }
 
