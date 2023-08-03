@@ -1,8 +1,8 @@
 import "reflect-metadata"
 import express from 'express'
-import employeeRouter from './employee_router';
-import loggerMiddleware from './loggerMiddleware';
-import dataSource from "./dataSource";
+import loggerMiddleware from "./middleware/logger.middleware";
+import { employeeRouter } from "./route/employee.route";
+import dataSource from "./db/postgres.db";
 
 const server = express();
 
