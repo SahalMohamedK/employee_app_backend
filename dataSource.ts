@@ -5,13 +5,14 @@ import Employee from "./Employee"
 const dataSource = new DataSource({
     type: "postgres",
     host: "localhost",
-    port: 8877,
+    port: 8765,
     username: "postgres",
     password: "postgres",
-    database: "training",
+    database: "employee_management",
     entities: [Employee],
     logging: true,
-    namingStrategy: new SnakeNamingStrategy()
+    namingStrategy: new SnakeNamingStrategy(),
+    synchronize: true
 })
 
 export default dataSource

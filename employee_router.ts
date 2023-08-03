@@ -5,9 +5,22 @@ import dataSource from "./dataSource";
 const employeeRouter = express.Router();
 
 employeeRouter.get('', async (req, res) => {
+    const nameFilter = req.query.name as string;
+    const emailFilter = req.query.email as string;
     const employeeRepo = dataSource.getRepository(Employee)
-    const employees = await employeeRepo.find()
 
+    const qb = employeeRepo.createQueryBuilder()
+    
+    if(nameFilter){
+        qb.andWhere("name LIKE :name", {name: `%${nameFilter}%`})
+    }
+
+    if(emailFilter){
+        qb.andWhere("email LIKE :email", {email: `%${emailFilter}%`})
+    }
+
+    const employees = await qb.getMany()
+    
     res.status(200).send(employees)
 })
 
@@ -20,7 +33,7 @@ employeeRouter.get('/:id', async(req, res) => {
     if(employee){
         res.status(200).send(employee)
     }else{
-        res.status(400).send({message: `No employee with the id ${id}`})
+        res.status(404).send({message: `No employee with the id ${id}`})
     }
 })
 
@@ -47,7 +60,7 @@ employeeRouter.put('/:id', async (req, res) => {
     
         res.status(200).send(saveEmployee)
     }else{
-        res.status(400).send({message: `No employee with the id ${id}`})
+        res.status(404).send({message: `No employee with the id ${id}`})
     }
 
 })
@@ -59,10 +72,10 @@ employeeRouter.delete('/:id', async (req, res) => {
     const employee = await employeeRepo.findOneBy({id})
 
     if(employee){
-        await employeeRepo.remove(employee)
+        await employeeRepo.softRemove(employee)
         res.status(200).send({message: `Employee with id ${id} deleted`})
     }else{
-        res.status(400).send({message: `No employee with the id ${id}`})
+        res.status(404).send({message: `No employee with the id ${id}`})
     }
 })
 

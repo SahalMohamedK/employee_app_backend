@@ -16,4 +16,3 @@ server.use('/employees', employeeRouter);
         console.log("server is listening to port 3000");
     })
 })()
-
