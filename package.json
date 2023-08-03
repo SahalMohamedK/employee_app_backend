@@ -9,7 +9,7 @@
     "start": "npm run build && node dist/app.js",
     "make-migrations": "npm run build && npx typeorm migration:generate -d dist/db/postgres.db.js",
     "migrate": "npm run build && npx typeorm migration:run -d dist/db/postgres.db.js",
-    "revert-migrations": "npm run build && npx typeorm migration:revert -d dist/db/postgres.db.js"
+    "revert-migration": "npm run build && npx typeorm migration:revert -d dist/db/postgres.db.js"
   },
   "keywords": [],
   "author": "",

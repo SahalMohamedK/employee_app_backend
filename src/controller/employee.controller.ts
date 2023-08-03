@@ -36,17 +36,17 @@ class EmployeeController{
     }
 
     create = async (req: express.Request, res: express.Response) => {
-        const [name, email] = this.getBody(req, ['name', 'email'])
+        const [name, email, address] = this.getBody(req, ['name', 'email', 'address'])
 
-        const employee = await this.service.create(name, email);
+        const employee = await this.service.create(name, email, address);
         res.status(200).send(employee)
     }
 
     update = async (req: express.Request, res: express.Response) => {
         const id = this.getId(req)
-        const [name, email] = this.getBody(req, ['name', 'email'])
+        const [name, email, address] = this.getBody(req, ['name', 'email', 'address'])
 
-        const employee = await this.service.update(id, name, email)
+        const employee = await this.service.update(id, name, email, address)
         res.status(200).send(employee)
     }
 

@@ -11,14 +11,15 @@ class EmployeeRepository{
     }
 
     getById(id: number): Promise<Employee> {
-        return this.repository.findOneBy({id});
+        return this.repository.findOne({
+            where: {id},
+            relations: {
+                address: true
+            }
+        });
     }   
 
-    create(employee: Employee): Promise<Employee> {
-        return this.repository.save(employee)
-    }
-
-    update(employee: Employee): Promise<Employee> {
+    save(employee: Employee): Promise<Employee> {
         return this.repository.save(employee)
     }
 

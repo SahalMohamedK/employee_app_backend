@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import Address from "./address.entity";
 
-@Entity("employees")
+@Entity()
 class Employee{
     @PrimaryGeneratedColumn()
     id: number;
@@ -13,6 +14,9 @@ class Employee{
 
     @Column({nullable: true})
     age: number;
+
+    @OneToOne(() => Address, (address) => address.employee, {cascade: true})
+    address: Address;
 
     @CreateDateColumn()
     createdAt: Date;
