@@ -1,15 +1,13 @@
 import { DataSource } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
-import Employee from "../entity/employee.entity";
-import Address from "../entity/address.entity";
 
 const dataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
-  port: 8765,
-  username: "postgres",
-  password: "postgres",
-  database: "employee_management",
+  host: process.env.POSTGRES_HOST,
+  port: Number(process.env.POSTGRES_PORT),
+  username: process.env.POSTGRES_USERNAME,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DATABASE,
   logging: true,
   namingStrategy: new SnakeNamingStrategy(),
   entities: ["dist/entity/*.js"],

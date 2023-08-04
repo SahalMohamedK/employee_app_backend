@@ -3,6 +3,7 @@ import jsonwebtoken from "jsonwebtoken"
 import HttpException from "../exception/http.exception";
 import { jwtPayload } from "../utils/jwtPayload.type";
 import { RequestWithUser } from "../utils/requestWithUser";
+import { JWT_SECRET_KET } from "../config";
 
 const authenticate = async (
     req: RequestWithUser, 
@@ -11,7 +12,7 @@ const authenticate = async (
 ) => {
     try{
         const token = getTokenFromRequestHeader(req)
-        const payload: jwtPayload = jsonwebtoken.verify(token, "ABCDE") as jwtPayload;
+        const payload: jwtPayload = jsonwebtoken.verify(token, JWT_SECRET_KET) as jwtPayload;
         req.user = payload
     
         next();

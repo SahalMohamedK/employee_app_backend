@@ -8,6 +8,7 @@ import { AddressInput } from "../models/addressInput,model";
 import EmployeeRepository from "../repository/employee.repository";
 import LoginEmplopyeeDto from '../dto/loginEmployee.dto';
 import { jwtPayload } from '../utils/jwtPayload.type';
+import { JWT_SECRET_KET } from '../config';
 
 class EmployeeService {
   constructor(private repository: EmployeeRepository) {}
@@ -39,7 +40,7 @@ class EmployeeService {
       role: employee.role
     }
 
-    const token = jsonwebtoken.sign(payload, "ABCDE", {expiresIn: "1h"})
+    const token = jsonwebtoken.sign(payload, JWT_SECRET_KET, {expiresIn: "1h"})
 
     return {token}
   }
