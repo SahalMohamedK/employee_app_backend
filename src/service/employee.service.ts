@@ -7,6 +7,7 @@ import HttpException from "../exception/http.exception";
 import { AddressInput } from "../models/addressInput,model";
 import EmployeeRepository from "../repository/employee.repository";
 import LoginEmplopyeeDto from '../dto/loginEmployee.dto';
+import { jwtPayload } from '../utils/jwtPayload.type';
 
 class EmployeeService {
   constructor(private repository: EmployeeRepository) {}
@@ -32,9 +33,10 @@ class EmployeeService {
       throw new HttpException(401, "Incorrect email or password")
     }
 
-    const payload = {
+    const payload: jwtPayload = {
       name: employee.name,
-      email: employee.email
+      email: employee.email,
+      role: employee.role
     }
 
     const token = jsonwebtoken.sign(payload, "ABCDE", {expiresIn: "1h"})
@@ -50,18 +52,19 @@ class EmployeeService {
     return this.getEmployeeById(id);
   }
 
-  async create(createDto: CreateEmplopyeeDto): Promise<Employee | null> {
-    const newAddress = new Address();
-    newAddress.line1 = createDto.address.line1;
-    newAddress.pincode = createDto.address.pincode;
+  async create(employeeDto: CreateEmplopyeeDto): Promise<Employee | null> {
+    const address = new Address();
+    address.line1 = employeeDto.address.line1;
+    address.pincode = employeeDto.address.pincode;
 
-    const newEmployee = new Employee();
-    newEmployee.name = createDto.name;
-    newEmployee.email = createDto.email;
-    newEmployee.password = await bcrypt.hash(createDto.password, 10);
-    newEmployee.address = newAddress;
+    const employee = new Employee();
+    employee.name = employeeDto.name;
+    employee.email = employeeDto.email;
+    employee.role = employeeDto.role;
+    employee.password = await bcrypt.hash(employeeDto.password, 10);
+    employee.address = address;
 
-    return this.repository.save(newEmployee);
+    return this.repository.save(employee);
   }
 
   async update(

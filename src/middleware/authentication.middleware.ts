@@ -1,15 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import jsonwebtoken from "jsonwebtoken"
 import HttpException from "../exception/http.exception";
+import { jwtPayload } from "../utils/jwtPayload.type";
+import { RequestWithUser } from "../utils/requestWithUser";
 
 const authenticate = async (
-    req: Request, 
+    req: RequestWithUser, 
     res: Response, 
     next: NextFunction
 ) => {
     try{
         const token = getTokenFromRequestHeader(req)
-        jsonwebtoken.verify(token, "ABCDE");
+        const payload: jwtPayload = jsonwebtoken.verify(token, "ABCDE") as jwtPayload;
+        req.user = payload
+    
         next();
     }catch(error){
         next(new HttpException(401, "Authentication required"))

@@ -6,6 +6,8 @@ import { validate } from "class-validator";
 import HttpException from "../exception/http.exception";
 import LoginEmplopyeeDto from "../dto/loginEmployee.dto";
 import authenticate from "../middleware/authentication.middleware";
+import autherize from "../middleware/authorize.middleware";
+import { Role } from "../utils/role.enum";
 
 class EmployeeController {
   public router: express.Router;
@@ -16,7 +18,7 @@ class EmployeeController {
     this.router.post("/login", this.login);
     this.router.get("/", authenticate, this.getAll);
     this.router.get("/:id", authenticate, this.getById);
-    this.router.post("/", authenticate, this.create);
+    this.router.post("/", authenticate, autherize([Role.HR, Role.DEVELOPER]), this.create);
     this.router.put("/:id", authenticate, this.update);
     this.router.delete("/:id", authenticate, this.softRemove);
   }
