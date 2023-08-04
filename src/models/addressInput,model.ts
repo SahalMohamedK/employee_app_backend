@@ -1,4 +1,4 @@
-export interface AddressInput{
-    line1: string;
-    pincode: string;
+export interface AddressInput {
+  line1: string;
+  pincode: string;
 }

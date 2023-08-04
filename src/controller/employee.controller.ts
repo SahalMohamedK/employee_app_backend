@@ -1,60 +1,92 @@
-import express from "express"
+import express, { NextFunction } from "express";
 import EmployeeService from "../service/employee.service";
+import { plainToInstance } from "class-transformer";
+import CreateEmplopyeeDto from "../dto/createEmployee.dto";
+import { validate } from "class-validator";
+import HttpException from "../exception/http.exception";
+import LoginEmplopyeeDto from "../dto/loginEmployee.dto";
+import authenticate from "../middleware/authentication.middleware";
 
-class EmployeeController{
-    public router: express.Router;
+class EmployeeController {
+  public router: express.Router;
 
-    constructor(
-        private service: EmployeeService
-    ){
-        this.router = express.Router()
+  constructor(private service: EmployeeService) {
+    this.router = express.Router();
 
-        this.router.get('/', this.getAll)
-        this.router.get('/:id', this.getById)
-        this.router.post('/', this.create)
-        this.router.put('/:id', this.update)
-        this.router.delete('/:id', this.delete)
+    this.router.post("/login", this.login);
+    this.router.get("/", authenticate, this.getAll);
+    this.router.get("/:id", authenticate, this.getById);
+    this.router.post("/", authenticate, this.create);
+    this.router.put("/:id", authenticate, this.update);
+    this.router.delete("/:id", authenticate, this.softRemove);
+  }
+
+  getId(req: express.Request) {
+    return Number(req.params.id);
+  }
+
+  login = async(req: express.Request, res: express.Response, next: NextFunction) => {
+    try{
+      const loginEmplopyeeDto = plainToInstance(LoginEmplopyeeDto, req.body);
+      const errors = await validate(loginEmplopyeeDto)
+      if(errors.length){
+        throw new HttpException(400, JSON.stringify(errors))
+      }else{
+        const token = await this.service.login(loginEmplopyeeDto)
+        res.status(200).send(token)
+      }
+    }catch(error){
+      next(error)
     }
+  }
 
-    getId(req: express.Request){
-        return Number(req.params.id)
+  getAll = async (req: express.Request, res: express.Response) => {
+    const employees = await this.service.getAll();
+    res.status(200).send(employees);
+  };
+
+  getById = async (
+    req: express.Request,
+    res: express.Response,
+    next: NextFunction
+  ) => {
+    try {
+      const id = this.getId(req);
+      const employee = await this.service.getById(id);
+      res.status(200).send(employee);
+    } catch (error) {
+      next(error);
     }
+  };
 
-    getBody(req: express.Request, fields: string[]){
-        return fields.map(field => req.body[field])
+  create = async (req: express.Request, res: express.Response, next: NextFunction) => {
+    try{
+      const createEmployeeDto = plainToInstance(CreateEmplopyeeDto, req.body);
+      const errors = await validate(createEmployeeDto);
+      if(errors.length){
+        throw new HttpException(400, JSON.stringify(errors))
+      }else{
+        const employee = await this.service.create(createEmployeeDto);
+        res.status(200).send(employee);
+      }
+    }catch(error){
+      next(error)
     }
+  };
 
-    getAll = async(req: express.Request, res: express.Response) => {
-        const employees = await this.service.getAll();
-        res.status(200).send(employees)
-    }
+  update = async (req: express.Request, res: express.Response) => {
+    const id = this.getId(req);
+    // const [name, email, address] = this.getBody(req, ["name","email","address"]);
 
-    getById = async(req: express.Request, res: express.Response) => {
-        const id = this.getId(req)
-        const employee = await this.service.getById(id);
-        res.status(200).send(employee)
-    }
+    // const employee = await this.service.update(id, name, email, address);
+    // res.status(200).send(employee);
+  };
 
-    create = async (req: express.Request, res: express.Response) => {
-        const [name, email, address] = this.getBody(req, ['name', 'email', 'address'])
-
-        const employee = await this.service.create(name, email, address);
-        res.status(200).send(employee)
-    }
-
-    update = async (req: express.Request, res: express.Response) => {
-        const id = this.getId(req)
-        const [name, email, address] = this.getBody(req, ['name', 'email', 'address'])
-
-        const employee = await this.service.update(id, name, email, address)
-        res.status(200).send(employee)
-    }
-
-    delete = async (req: express.Request, res: express.Response) => {
-        const id = this.getId(req)
-        await this.service.softRemove(id)
-        res.status(200).send({message: `Employee with id ${id} deleted`})
-    }
+  softRemove = async (req: express.Request, res: express.Response) => {
+    const id = this.getId(req);
+    await this.service.softRemove(id);
+    res.status(200).send({ message: `Employee with id ${id} deleted` });
+  };
 }
 
-export default EmployeeController
+export default EmployeeController;
