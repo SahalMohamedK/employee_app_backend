@@ -9,10 +9,11 @@ function errorMiddleware(
 ) {
   try {
     if (error instanceof HttpException) {
-      res.status(error.status).send({ message: error.message });
-    } else {
-      res.status(500).send({ message: error.message });
+      res.status(error.status)
     }
+
+    res.locals.error = error;
+    next()
   } catch (err) {
     next(err);
   }

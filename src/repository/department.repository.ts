@@ -8,11 +8,11 @@ class DepartmentRepository {
     return this.repository.find();
   }
 
-  getById(id: number): Promise<Department> {
+  getById(id: string): Promise<Department | null> {
     return this.repository.findOneBy({id});
   }
 
-  save(department: Department): Promise<Department> {
+  save(department: Department): Promise<Department | null> {
     return this.repository.save(department);
   }
 

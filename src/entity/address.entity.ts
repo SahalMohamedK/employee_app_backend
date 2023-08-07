@@ -13,10 +13,22 @@ class Address extends AbstractEntity{
   @JoinColumn()
   employee: Employee;
 
-  @Column()
-  line1: string;
+  @Column({default: ''})
+  addressLine1: string;
 
-  @Column()
+  @Column({default: ''})
+  addressLine2: string;
+
+  @Column({default: ''})
+  city: string;
+
+  @Column({default: ''})
+  state: string;
+
+  @Column({default: ''})
+  country: string;
+
+  @Column({default: ''})
   pincode: string;
 }
 

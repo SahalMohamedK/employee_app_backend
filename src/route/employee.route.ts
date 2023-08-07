@@ -11,4 +11,4 @@ const employeeService = new EmployeeService(employeeRepository);
 const employeeController = new EmployeeController(employeeService);
 const employeeRouter = employeeController.router;
 
-export { employeeRouter };
+export default employeeRouter;

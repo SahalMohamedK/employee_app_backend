@@ -8,7 +8,7 @@ class EmployeeRepository {
     return this.repository.find();
   }
 
-  getBy(where: FindOptionsWhere<Employee>): Promise<Employee> {
+  getBy(where: FindOptionsWhere<Employee>): Promise<Employee | null> {
     return this.repository.findOne({
       where: where,
       relations: {
@@ -17,7 +17,7 @@ class EmployeeRepository {
     });
   }
 
-  save(employee: Employee): Promise<Employee> {
+  save(employee: Employee): Promise<Employee | null> {
     return this.repository.save(employee);
   }
 
