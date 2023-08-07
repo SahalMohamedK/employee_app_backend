@@ -27,7 +27,7 @@ class EmployeeService {
   }
 
   async login(loginDto: LoginemployeeDto) {
-    const employee = await this.repository.getBy({ email: loginDto.email, password: loginDto.password});
+    const employee = await this.repository.getBy({ email: loginDto.email});
     if (!employee) {
       throw new HttpException(401, `Incorrect email or password`);
     }

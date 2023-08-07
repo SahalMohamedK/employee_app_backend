@@ -34,6 +34,96 @@ describe("Employee service tests", () => {
   });
 
   describe('Test for login', () => {
+    test('Test for success', async() => {
+      const email = "sahal@gmail.com"
+      const password = "sahal@123"
+
+      const mockEmployee: Employee = {
+        name: "Sahal Mohamed",
+        email,
+        password: "$2b$10$BaPO4JD98lPNi6yDxpNTX.d30gZlyslAATuo/8ZwupTmlg7pA1LWa",
+        joiningDate: "11/02/2012",
+        experience: 8,
+        departmentId: "2",
+        isActive: true,
+        address: {
+          addressLine1: "Kunnummal (H)",
+          addressLine2: "Kunnumpuram",
+          city: "Malappuram",
+          state: "Kerala",
+          country: "India",
+          pincode: "676320",
+          deletedAt: null,
+          createdAt: new Date("2022-10-04T08:58:29.669Z"),
+          updatedAt: new Date("2022-10-04T08:58:29.669Z"),
+          id: "5ab12a9c-c870-4593-85d3-238cbd8e2749",
+        } as unknown as Address,
+        role: Role.ADMIN,
+        deletedAt: null,
+        createdAt: new Date("2022-10-04T08:58:29.669Z"),
+        updatedAt: new Date("2022-10-04T08:58:29.669Z"),
+        id: "191a2c85-604f-4b5d-a2d1-5243a3b38a8f",
+      } as unknown as Employee;
+
+      const inputLogin = {
+        email,
+        password
+      }
+
+      const matchData = {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b206aWQiOiIxOTFhMmM4NS02MDRmLTRiNWQtYTJkMS01MjQzYTNiMzhhOGYiLCJjdXN0b206dXNlcm5hbWUiOiJhc2giLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NjQ4OTM3NjcsImV4cCI6MTY2NDg5NzM2N30._F1o-KZAiy2QVN1XJFYWQFscT08tuaZq-YimrO9h2gE",
+          "employeeDetails": {
+            name: "Sahal Mohamed",
+            email: "sahal@gmail.com",
+            password:
+              "$2b$10$BaPO4JD98lPNi6yDxpNTX.d30gZlyslAATuo/8ZwupTmlg7pA1LWa",
+            joiningDate: "11/02/2012",
+            experience: 8,
+            departmentId: "2",
+            isActive: true,
+            address: {
+              addressLine1: "Edachira",
+              addressLine2: "Kakkanad",
+              city: "Ernakulam",
+              state: "Kerala",
+              country: "India",
+              pincode: "682024",
+              deletedAt: null,
+              createdAt: new Date("2022-10-04T08:58:29.669Z"),
+              updatedAt: new Date("2022-10-04T08:58:29.669Z"),
+              id: "5ab12a9c-c870-4593-85d3-238cbd8e2749",
+            } as unknown as Address,
+            role: Role.ADMIN,
+            deletedAt: null,
+            createdAt: new Date("2022-10-04T08:58:29.669Z"),
+            updatedAt: new Date("2022-10-04T08:58:29.669Z"),
+            id: "191a2c85-604f-4b5d-a2d1-5243a3b38a8f",
+          }
+      }
+
+      const loginDto = plainToInstance(LoginDto, inputLogin);
+
+
+      when(employeeRepository.getBy)
+        .calledWith({ email: loginDto.email})
+        .mockResolvedValueOnce(mockEmployee);
+
+        const payload: jwtPayload = {
+          name: mockEmployee.name,
+          email: mockEmployee.email,
+          role: mockEmployee.role,
+        };
+
+      const mockSign = jest.fn()
+      when(mockSign).calledWith(payload, JWT_SECRET_KET, {
+        expiresIn: "1h",
+      }).mockReturnValueOnce("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b206aWQiOiIxOTFhMmM4NS02MDRmLTRiNWQtYTJkMS01MjQzYTNiMzhhOGYiLCJjdXN0b206dXNlcm5hbWUiOiJhc2giLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NjQ4OTM3NjcsImV4cCI6MTY2NDg5NzM2N30._F1o-KZAiy2QVN1XJFYWQFscT08tuaZq-YimrO9h2gE");
+      jsonwebtoken.sign = mockSign;
+
+      const outputData = await employeeService.login(loginDto)
+
+      expect(outputData).toMatchObject(matchData)
+    })
     test('Test for invalid email and password', async() => {
       const email = "sahal@gmail.com"
       const password = "sahal@123"
@@ -105,7 +195,7 @@ describe("Employee service tests", () => {
 
 
       when(employeeRepository.getBy)
-        .calledWith({ email: loginDto.email, password: loginDto.password})
+        .calledWith({ email: loginDto.email})
         .mockResolvedValueOnce(null);
 
         const payload: jwtPayload = {
@@ -119,6 +209,10 @@ describe("Employee service tests", () => {
         expiresIn: "1h",
       }).mockReturnValueOnce("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b206aWQiOiIxOTFhMmM4NS02MDRmLTRiNWQtYTJkMS01MjQzYTNiMzhhOGYiLCJjdXN0b206dXNlcm5hbWUiOiJhc2giLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NjQ4OTM3NjcsImV4cCI6MTY2NDg5NzM2N30._F1o-KZAiy2QVN1XJFYWQFscT08tuaZq-YimrO9h2gE");
       jsonwebtoken.sign = mockSign;
+
+      const mockCompare = jest.fn()
+      when(mockCompare).calledWith({password: loginDto.password, email: mockEmployee.password})
+      bcrypt.compare = mockCompare;
 
       expect(async () => await employeeService.login(loginDto)).rejects.toThrowError()
     })
