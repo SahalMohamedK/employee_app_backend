@@ -14,10 +14,10 @@ class Address extends AbstractEntity{
   employee: Employee;
 
   @Column({default: ''})
-  addressLine1: string;
+  line1: string;
 
   @Column({default: ''})
-  addressLine2: string;
+  line2: string;
 
   @Column({default: ''})
   city: string;

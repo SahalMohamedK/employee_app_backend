@@ -63,8 +63,8 @@ class EmployeeService {
     if(!alreadyExists){
 
       const address = new Address();
-      address.addressLine1 = employeeDto.address.addressLine1;
-      address.addressLine2 = employeeDto.address.addressLine2;
+      address.line1 = employeeDto.address.line1;
+      address.line2 = employeeDto.address.line2;
       address.city = employeeDto.address.city;
       address.state = employeeDto.address.state;
       address.country = employeeDto.address.country;
@@ -98,8 +98,8 @@ class EmployeeService {
     employee.departmentId = employeeDto.departmentId;
     employee.joiningDate = employeeDto.joiningDate;
     employee.isActive = employeeDto.isActive;
-    employee.address.addressLine1 = employeeDto.address.addressLine1;
-    employee.address.addressLine2 = employeeDto.address.addressLine2;
+    employee.address.line1 = employeeDto.address.line1;
+    employee.address.line2 = employeeDto.address.line2;
     employee.address.city = employeeDto.address.city;
     employee.address.state = employeeDto.address.state;
     employee.address.country = employeeDto.address.country;
